@@ -1,0 +1,39 @@
+
+$SourceFolder1 = "RUTA_COMPRIMIR" #COLOCAR AQUI LA RUTA LA CUAL QUIEREN COMPRIMIR 
+
+$FilesToCompress1 = get-childitem -path $SourceFolder1  
+
+$nombre = @()
+
+foreach($filemes1 in $FilesToCompress1){$nombre +=$filemes1.Name}
+
+ write-host $nombre.Count
+
+
+for($i=0; $i -le $nombre.Count; $i++){
+
+$NAME = $nombre[$i]
+$SourceFolder = $SourceFolder1+$NAME+"\*" 
+
+$FilesToCompress = get-childitem -path $SourceFolder -File 	#aqui se obtenien los hijos de esas carpetas para su posterior compresion de cada uno de ellos 
+
+$DestinationFolder = $SourceFolder1 + $NAME+"\"
+
+#write-host $FilesToCompress
+
+foreach ($file in $FilesToCompress) {
+	
+  $FileName = $file.name
+
+    #write-host $FileName
+
+    if( $FileName.Split(".")[1] -ne "zip" -and  $FileName.Split(".")[2] -ne "zip" ){
+
+    $DestinationZip = Join-Path $DestinationFolder "$FileName.zip"
+
+    
+	Compress-Archive -Path $file.FullName -DestinationPath $DestinationZip
+    }
+  }
+
+}
